@@ -1,8 +1,8 @@
-import CustomError from '../errors/custom-error';
-import { SudokuSolver, Cell } from '../controllers/sudoku-solver';
+const CustomError = require('../errors/custom-error.js');
+const { SudokuSolver, Cell } = require('../controllers/sudoku-solver.js');
 
 
-export const checkPuzzle = (req, res, next) => {
+const checkPuzzle = (req, res, next) => {
     const { body } = req;
 
     if (!body.coordinate || !body.value) {
@@ -20,9 +20,10 @@ export const checkPuzzle = (req, res, next) => {
     next();
 };
 
-export const validatePuzzle = (req, res, next) => {
+const validatePuzzle = (req, res, next) => {
+    const isPathOnAPISolve = req.path === '/api/solve';
     if (!req.body.puzzle) {
-        throw new CustomError('Required field missing', 400, { field: 'puzzle' });
+        throw new CustomError(`Required field${isPathOnAPISolve ? '' : '(s)'} missing`, 400, { field: 'puzzle' });
     }
 
     try {
@@ -33,4 +34,9 @@ export const validatePuzzle = (req, res, next) => {
     }
 
     next();
+};
+
+module.exports = {
+    checkPuzzle,
+    validatePuzzle
 };
